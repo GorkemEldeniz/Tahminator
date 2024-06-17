@@ -8,7 +8,7 @@ export async function GET() {
 	const authToken = headersList.get("authorization");
 	const adminToken = process.env.ADMIN_TOKEN || "";
 
-	//if (authToken !== adminToken) return new Response("FAIL", { status: 403 });
+	if (authToken !== adminToken) return new Response("FAIL", { status: 403 });
 
 	try {
 		// get the previos date results
