@@ -15,6 +15,7 @@ function getPreviousDayDate() {
 
 	const previousDay = new Date(today);
 	previousDay.setDate(today.getDate() - 1);
+	previousDay.setUTCHours(0, 0, 0, 0);
 
 	const year = previousDay.getFullYear();
 	const month = String(previousDay.getMonth() + 1).padStart(2, "0");
