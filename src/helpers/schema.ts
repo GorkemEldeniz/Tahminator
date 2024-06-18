@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const predictionFormSchema = z.object({
-	id: z.string(),
+	matchId: z.string(),
 	home: z.string().min(2).max(50),
 	away: z.string().min(2).max(50),
 	homeScore: z.string().transform((val, ctx) => {
@@ -47,7 +47,7 @@ const predictionFormSchema = z.object({
 });
 
 const predictionUpdateFormSchema = z.object({
-	id: z.string(),
+	matchId: z.string(),
 	homeScore: z.string().transform((val, ctx) => {
 		const parsed = parseInt(val);
 		if (isNaN(parsed)) {

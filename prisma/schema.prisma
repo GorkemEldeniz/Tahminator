@@ -16,7 +16,7 @@ model User {
 }
 
 model Prediction {
-  id        String   @id
+  matchId   String
   createdAt DateTime @default(now()) @db.Date
   user      User     @relation(fields: [userId], references: [id])
   userId    String
@@ -24,4 +24,6 @@ model Prediction {
   away      String
   homeScore Int
   awayScore Int
+
+  @@id(name: "predictionId", [matchId, userId])
 }

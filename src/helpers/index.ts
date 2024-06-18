@@ -22,7 +22,7 @@ function getPreviousDayDate() {
 
 	return {
 		date: `${year}${month}${day}`,
-		ISO: today.toISOString(),
+		ISO: previousDay.toISOString(),
 	};
 }
 

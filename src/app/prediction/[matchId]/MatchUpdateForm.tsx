@@ -26,7 +26,7 @@ export default function MatchUpdateForm({
 	const form = useForm<z.infer<typeof predictionUpdateFormSchema>>({
 		resolver: zodResolver(predictionUpdateFormSchema),
 		defaultValues: {
-			id: prediction.id,
+			matchId: prediction.matchId,
 			homeScore: prediction.homeScore,
 			awayScore: prediction.awayScore,
 		},

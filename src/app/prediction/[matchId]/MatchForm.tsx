@@ -31,7 +31,7 @@ export default function MatchForm({
 	const form = useForm<z.infer<typeof predictionFormSchema>>({
 		resolver: zodResolver(predictionFormSchema),
 		defaultValues: {
-			id: matchId,
+			matchId: matchId,
 			home: details.homeTeam?.name,
 			away: details.awayTeam?.name,
 		},

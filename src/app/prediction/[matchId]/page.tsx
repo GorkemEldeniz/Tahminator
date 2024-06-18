@@ -10,12 +10,14 @@ export default async function MatchDetailPage({
 	params: { matchId: string };
 }) {
 	const details = await getMatchDetailByID(params.matchId);
-	const { id: userId } = (await currentUser()) as User;
+	const { id } = (await currentUser()) as User;
 
-	const prediction = await prisma.prediction.findFirst({
+	const prediction = await prisma.prediction.findUnique({
 		where: {
-			userId,
-			id: params.matchId,
+			predictionId: {
+				matchId: params.matchId,
+				userId: id,
+			},
 		},
 	});
 
