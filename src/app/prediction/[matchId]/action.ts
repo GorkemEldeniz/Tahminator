@@ -16,7 +16,7 @@ const predictionFormSchema = z.object({
 });
 
 const predictionUpdateFormSchema = z.object({
-	matchId: z.number(),
+	matchId: z.string(),
 	homeScore: z.number().min(0),
 	awayScore: z.number().min(0),
 });
