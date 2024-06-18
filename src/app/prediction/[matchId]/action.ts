@@ -50,6 +50,7 @@ export const createMatchPrediction = actionClient
 				message: "Prediction created and saved!",
 			};
 		} catch (e) {
+			console.log(e);
 			throw new Error("Prediction could not updated");
 		} finally {
 			revalidatePath(`/prediction/${id}`);
