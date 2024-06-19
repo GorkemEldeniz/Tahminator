@@ -1,7 +1,7 @@
 import NavBar from "@/components/NavBar";
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
-import { ClerkProvider, SignedIn } from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -29,9 +29,7 @@ export default function RootLayout({
 						disableTransitionOnChange
 					>
 						<main className='max-w-screen-xl mx-auto h-screen'>
-							<SignedIn>
-								<NavBar />
-							</SignedIn>
+							<NavBar />
 							{children}
 						</main>
 						<Toaster />

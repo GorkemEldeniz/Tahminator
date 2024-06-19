@@ -1,7 +1,13 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { UserButton } from "@clerk/nextjs";
+import {
+	SignedIn,
+	SignedOut,
+	SignInButton,
+	SignUpButton,
+	UserButton,
+} from "@clerk/nextjs";
 import { Trophy } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -11,7 +17,7 @@ export default function NavBar() {
 	const pathname = usePathname();
 
 	const isActiveTab = (path: string) => {
-		return path === pathname;
+		return pathname.startsWith(path);
 	};
 
 	const styles =
@@ -29,25 +35,31 @@ export default function NavBar() {
 				<span className='sr-only'>Tahminator</span>
 			</Link>
 			<nav className='ml-auto flex items-center space-x-4'>
-				<Link
-					href='/'
-					className={cn(styles, {
-						"font-bold": isActiveTab("/"),
-					})}
-					prefetch={false}
-				>
-					Home
-				</Link>
-				<Link
-					href='/prediction'
-					className={cn(styles, {
-						"font-bold": isActiveTab("/prediction"),
-					})}
-					prefetch={false}
-				>
-					Prediction
-				</Link>
-				<UserButton />
+				<SignedIn>
+					<Link
+						href='/'
+						className={cn(styles, {
+							"font-bold": isActiveTab("/"),
+						})}
+						prefetch={false}
+					>
+						Home
+					</Link>
+					<Link
+						href='/prediction'
+						className={cn(styles, {
+							"font-bold": isActiveTab("/prediction"),
+						})}
+						prefetch={false}
+					>
+						Prediction
+					</Link>
+					<UserButton />
+				</SignedIn>
+				<SignedOut>
+					<SignInButton />
+					<SignUpButton />
+				</SignedOut>
 				<ModeToggle />
 			</nav>
 		</header>
