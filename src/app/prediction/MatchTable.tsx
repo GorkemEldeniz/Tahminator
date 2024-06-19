@@ -8,8 +8,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import { convertToLocalTime } from "@/helpers";
 import type { Match } from "fotmob/dist/esm/types/matches";
+import { DateTime } from "luxon";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -19,16 +19,14 @@ export default function MatchTable({
 	matches: Match[] | undefined;
 }) {
 	const router = useRouter();
+	const locale = DateTime.now().setZone("Turkey");
 
 	return (
 		<Table>
 			<TableHeader>
 				<TableRow>
 					<TableHead colSpan={5} className='text-center'>
-						{new Date().toLocaleDateString("tr", {
-							dateStyle: "short",
-						})}{" "}
-						Matches
+						{locale.toFormat("dd.MM.yyyy")} Matches
 					</TableHead>
 				</TableRow>
 			</TableHeader>
@@ -54,7 +52,9 @@ export default function MatchTable({
 							</TableCell>
 
 							<TableCell align='center'>
-								{convertToLocalTime(match.timeTS as number)}
+								{DateTime.fromMillis(match.timeTS as number)
+									.setZone("Turkey")
+									.toFormat("HH:mm")}
 								<br />-
 							</TableCell>
 

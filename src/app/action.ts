@@ -1,16 +1,14 @@
 "use server";
 
-import { getFormattedDate } from "@/helpers";
-import Fotmob from "fotmob";
 import { MatchDetails } from "fotmob/dist/esm/types/match-details";
 import type { Match, Matches } from "fotmob/dist/esm/types/matches";
+import { DateTime } from "luxon";
 import { revalidatePath } from "next/cache";
-
-const fotmob = new Fotmob();
 
 async function getEuroCupMatches() {
 	try {
-		const currentDate = getFormattedDate();
+		const locale = DateTime.now().setZone("Turkey");
+		const currentDate = locale.toFormat("yyyyMMdd");
 		const res = await fetch(
 			`https://www.fotmob.com/api/matches?date=${currentDate}`
 		);
