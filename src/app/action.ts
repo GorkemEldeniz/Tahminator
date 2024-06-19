@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "@/db";
+import { getPreviousDayDate } from "@/helpers";
 import { currentUser, User } from "@clerk/nextjs/server";
 import { MatchDetails } from "fotmob/dist/esm/types/match-details";
 import type { Match, Matches } from "fotmob/dist/esm/types/matches";
@@ -80,4 +81,35 @@ async function getPredictionByDate() {
 	}
 }
 
-export { getEuroCupMatches, getMatchDetailByID, getPredictionByDate };
+async function getUsersScore() {
+	try {
+		const previousDate = getPreviousDayDate();
+
+		const usersScore = await prisma.user.findMany({
+			select: {
+				predictions: {
+					where: {
+						createdAt: {
+							lte: previousDate.ISO as string,
+						},
+					},
+				},
+				score: true,
+				name: true,
+			},
+		});
+
+		console.log(usersScore);
+
+		return usersScore;
+	} catch (e) {
+		throw new Error("Failed to get users scores");
+	}
+}
+
+export {
+	getEuroCupMatches,
+	getMatchDetailByID,
+	getPredictionByDate,
+	getUsersScore,
+};

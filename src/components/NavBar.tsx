@@ -54,6 +54,15 @@ export default function NavBar() {
 					>
 						Prediction
 					</Link>
+					<Link
+						href='/standings'
+						className={cn(styles, {
+							"font-bold": isActiveTab("/standings"),
+						})}
+						prefetch={false}
+					>
+						Standings
+					</Link>
 					<UserButton />
 				</SignedIn>
 				<SignedOut>
