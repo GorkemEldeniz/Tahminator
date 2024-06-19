@@ -17,7 +17,7 @@ export default function NavBar() {
 	const pathname = usePathname();
 
 	const isActiveTab = (path: string) => {
-		return pathname.startsWith(path);
+		return pathname === path;
 	};
 
 	const styles =
