@@ -1,8 +1,9 @@
-import { getEuroCupMatches } from "../action";
+import { getEuroCupMatches, getPredictionByDate } from "../action";
 import MatchTable from "./MatchTable";
 
 export default async function Prediction() {
-	let matches = await getEuroCupMatches();
+	const matches = await getEuroCupMatches();
+	const predictions = await getPredictionByDate();
 
-	return <MatchTable matches={matches} />;
+	return <MatchTable predictions={predictions} matches={matches} />;
 }

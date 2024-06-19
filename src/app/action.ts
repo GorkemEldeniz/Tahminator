@@ -1,5 +1,7 @@
 "use server";
 
+import prisma from "@/db";
+import { currentUser, User } from "@clerk/nextjs/server";
 import { MatchDetails } from "fotmob/dist/esm/types/match-details";
 import type { Match, Matches } from "fotmob/dist/esm/types/matches";
 import { DateTime } from "luxon";
@@ -54,4 +56,28 @@ async function getMatchDetailByID(id: string) {
 	}
 }
 
-export { getEuroCupMatches, getMatchDetailByID };
+async function getPredictionByDate() {
+	try {
+		const { id } = (await currentUser()) as User;
+
+		const currentDate = DateTime.now().setZone("Turkey").toISO();
+
+		const predictions = await prisma?.prediction.findMany({
+			where: {
+				createdAt: currentDate as string,
+				userId: id,
+			},
+			select: {
+				homeScore: true,
+				awayScore: true,
+				matchId: true,
+			},
+		});
+
+		return predictions;
+	} catch (e) {
+		throw new Error("Failed to get matches");
+	}
+}
+
+export { getEuroCupMatches, getMatchDetailByID, getPredictionByDate };
