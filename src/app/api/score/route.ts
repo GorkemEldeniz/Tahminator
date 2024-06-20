@@ -15,7 +15,9 @@ export async function GET() {
 		const previousDayDate = getPreviousDayDate();
 
 		const res = await fetch(
-			`https://www.fotmob.com/api/matches?date=${previousDayDate.date}`
+			`https://www.fotmob.com/api/matches?date=${previousDayDate.toFormat(
+				"yyyyMMdd"
+			)}`
 		);
 
 		const { leagues } = (await res.json()) as Matches;
@@ -31,7 +33,7 @@ export async function GET() {
 
 		const usersPrediction = await prisma.prediction.findMany({
 			where: {
-				createdAt: previousDayDate.ISO as string,
+				createdAt: previousDayDate.toISO() as string,
 			},
 		});
 

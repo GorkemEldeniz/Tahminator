@@ -7,6 +7,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { Trophy } from "lucide-react";
+import { useMemo } from "react";
 
 interface UsersScore {
 	name: string | null;
@@ -27,6 +28,11 @@ export default function StandingsTable({
 }: {
 	usersScore: UsersScore[];
 }) {
+	const sortedUsersScore = useMemo(
+		() => usersScore.sort((a, b) => b.score - a.score),
+		[usersScore]
+	);
+
 	return (
 		<div className='bg-background p-4 md:p-6 rounded-lg shadow-lg'>
 			<div className='flex items-center justify-between mb-4'>
@@ -51,7 +57,7 @@ export default function StandingsTable({
 						</TableRow>
 					</TableHeader>
 					<TableBody>
-						{usersScore.map((userScore, index) => {
+						{sortedUsersScore.map((userScore, index) => {
 							const { name, score, predictions } = userScore;
 
 							const avarageScorePerPrediction =

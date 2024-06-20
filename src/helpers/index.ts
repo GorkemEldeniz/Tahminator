@@ -1,14 +1,11 @@
 import { DateTime } from "luxon";
 
 function getPreviousDayDate() {
-	const locale = DateTime.now().setZone("Turkey");
+	const localeDate = DateTime.now().setZone("Turkey");
+	const previousDate = localeDate.minus({ day: 1 });
+	previousDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
 
-	const previousDate = locale.minus({ day: 1 });
-
-	return {
-		date: previousDate.toFormat("yyyyMMdd"),
-		ISO: previousDate.toISO(),
-	};
+	return previousDate;
 }
 
 export { getPreviousDayDate };

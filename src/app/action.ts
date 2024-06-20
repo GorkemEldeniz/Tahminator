@@ -1,7 +1,6 @@
 "use server";
 
 import prisma from "@/db";
-import { getPreviousDayDate } from "@/helpers";
 import { currentUser, User } from "@clerk/nextjs/server";
 import { MatchDetails } from "fotmob/dist/esm/types/match-details";
 import type { Match, Matches } from "fotmob/dist/esm/types/matches";
@@ -82,15 +81,15 @@ async function getPredictionByDate() {
 }
 
 async function getUsersScore() {
+	const localeDate = DateTime.now().setZone("Turkey");
+	localeDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
 	try {
-		const previousDate = getPreviousDayDate();
-
 		const usersScore = await prisma.user.findMany({
 			select: {
 				predictions: {
 					where: {
 						createdAt: {
-							lte: previousDate.ISO as string,
+							lte: localeDate.toISO() as string,
 						},
 					},
 				},
@@ -98,8 +97,6 @@ async function getUsersScore() {
 				name: true,
 			},
 		});
-
-		console.log(usersScore);
 
 		return usersScore;
 	} catch (e) {
