@@ -1,6 +1,6 @@
 import prisma from "@/db";
-import { getPreviousDayDate } from "@/helpers";
 import type { Match, Matches } from "fotmob/dist/esm/types/matches";
+import { DateTime } from "luxon";
 import { headers } from "next/headers";
 
 export async function GET() {
@@ -12,7 +12,8 @@ export async function GET() {
 
 	try {
 		// get the previos date results
-		const previousDayDate = getPreviousDayDate();
+		const dateTime = DateTime.now().setZone("utc");
+		const previousDayDate = dateTime.minus({ day: 1 });
 
 		const res = await fetch(
 			`https://www.fotmob.com/api/matches?date=${previousDayDate.toFormat(
@@ -33,7 +34,7 @@ export async function GET() {
 
 		const usersPrediction = await prisma.prediction.findMany({
 			where: {
-				createdAt: previousDayDate.toISO() as string,
+				createdAt: dateTime.toISO() as string,
 			},
 		});
 

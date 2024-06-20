@@ -81,15 +81,15 @@ async function getPredictionByDate() {
 }
 
 async function getUsersScore() {
-	const localeDate = DateTime.now().setZone("Turkey");
-	localeDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+	let localeDate = DateTime.now().setZone("utc");
+
 	try {
 		const usersScore = await prisma.user.findMany({
 			select: {
 				predictions: {
 					where: {
 						createdAt: {
-							lt: localeDate.toISO() as string,
+							lte: localeDate.toISO() as string,
 						},
 					},
 				},
