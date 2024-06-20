@@ -18,7 +18,7 @@ model User {
 model Prediction {
   matchId   String
   createdAt DateTime @default(now()) @db.Date
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String
   home      String
   away      String
