@@ -8,12 +8,15 @@ import {
 	SignUpButton,
 	UserButton,
 } from "@clerk/nextjs";
+import { useMediaQuery } from "@uidotdev/usehooks";
 import { Trophy } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import MobileNavBar from "./Mobile-NavBar";
 import { ModeToggle } from "./mode-toggle";
 
 export default function NavBar() {
+	const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
 	const pathname = usePathname();
 
 	const isActiveTab = (path: string) => {
@@ -36,33 +39,40 @@ export default function NavBar() {
 			</Link>
 			<nav className='ml-auto flex items-center space-x-4'>
 				<SignedIn>
-					<Link
-						href='/'
-						className={cn(styles, {
-							"font-bold": isActiveTab("/"),
-						})}
-						prefetch={false}
-					>
-						Home
-					</Link>
-					<Link
-						href='/prediction'
-						className={cn(styles, {
-							"font-bold": isActiveTab("/prediction"),
-						})}
-						prefetch={false}
-					>
-						Prediction
-					</Link>
-					<Link
-						href='/standings'
-						className={cn(styles, {
-							"font-bold": isActiveTab("/standings"),
-						})}
-						prefetch={false}
-					>
-						Standings
-					</Link>
+					{isSmallDevice ? (
+						<MobileNavBar />
+					) : (
+						<>
+							<Link
+								href='/'
+								className={cn(styles, {
+									"font-bold": isActiveTab("/"),
+								})}
+								prefetch={false}
+							>
+								Home
+							</Link>
+							<Link
+								href='/prediction'
+								className={cn(styles, {
+									"font-bold": isActiveTab("/prediction"),
+								})}
+								prefetch={false}
+							>
+								Prediction
+							</Link>
+							<Link
+								href='/standings'
+								className={cn(styles, {
+									"font-bold": isActiveTab("/standings"),
+								})}
+								prefetch={false}
+							>
+								Standings
+							</Link>
+						</>
+					)}
+
 					<UserButton />
 				</SignedIn>
 				<SignedOut>
