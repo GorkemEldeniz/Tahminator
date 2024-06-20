@@ -89,7 +89,7 @@ async function getUsersScore() {
 				predictions: {
 					where: {
 						createdAt: {
-							lte: localeDate.toISO() as string,
+							lt: localeDate.toISO() as string,
 						},
 					},
 				},
