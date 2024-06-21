@@ -31,9 +31,13 @@ export default function MatchTable({
 		<Table>
 			<TableHeader>
 				<TableRow>
-					<TableHead colSpan={5} className='text-center'>
+					<TableHead></TableHead>
+					<TableHead></TableHead>
+					<TableHead className='text-center'>
 						{locale.toFormat("dd.MM.yyyy")} Matches
 					</TableHead>
+					<TableHead></TableHead>
+					<TableHead></TableHead>
 				</TableRow>
 			</TableHeader>
 			<TableBody>

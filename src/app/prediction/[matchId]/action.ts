@@ -7,7 +7,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-const predictionFormSchema = z.object({
+const createPredictionSchema = z.object({
 	matchId: z.string(),
 	home: z.string().min(2).max(50),
 	away: z.string().min(2).max(50),
@@ -15,14 +15,14 @@ const predictionFormSchema = z.object({
 	awayScore: z.number().min(0),
 });
 
-const predictionUpdateFormSchema = z.object({
+const predictionUpdateSchema = z.object({
 	matchId: z.string(),
 	homeScore: z.number().min(0),
 	awayScore: z.number().min(0),
 });
 
 export const createMatchPrediction = actionClient
-	.schema(predictionFormSchema)
+	.schema(createPredictionSchema)
 	.action(
 		async ({ parsedInput: { home, away, homeScore, awayScore, matchId } }) => {
 			try {
@@ -49,7 +49,7 @@ export const createMatchPrediction = actionClient
 				};
 			} catch (e) {
 				console.log(e);
-				throw new Error("Prediction could not updated");
+				throw new Error("Prediction could not created!");
 			} finally {
 				revalidatePath(`/prediction/${matchId}`);
 			}
@@ -57,7 +57,7 @@ export const createMatchPrediction = actionClient
 	);
 
 export const updateMatchPrediction = actionClient
-	.schema(predictionUpdateFormSchema)
+	.schema(predictionUpdateSchema)
 	.action(async ({ parsedInput: { homeScore, awayScore, matchId } }) => {
 		try {
 			const { id } = (await currentUser()) as User;
