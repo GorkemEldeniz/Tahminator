@@ -1,8 +1,8 @@
-import { getUsersScore } from "../action";
+import { getUsersData } from "../action";
 import StandingsTable from "./StandingsTable";
 
 export default async function StandingsPage() {
-	const usersScore = await getUsersScore();
+	const usersData = await getUsersData();
 
-	return <StandingsTable usersScore={usersScore} />;
+	return <StandingsTable usersData={usersData} />;
 }

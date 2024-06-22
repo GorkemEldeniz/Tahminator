@@ -3,7 +3,7 @@
 import prisma from "@/db";
 import { currentUser, User } from "@clerk/nextjs/server";
 import { MatchDetails } from "fotmob/dist/esm/types/match-details";
-import type { Match, Matches } from "fotmob/dist/esm/types/matches";
+import type { Matches } from "fotmob/dist/esm/types/matches";
 import { DateTime } from "luxon";
 import { revalidatePath } from "next/cache";
 
@@ -16,17 +16,13 @@ async function getEuroCupMatches() {
 		);
 
 		const { leagues } = (await res.json()) as Matches;
-
-		const matches: Match[] = [];
-
 		if (leagues) {
-			leagues
-				?.filter(({ name }) => name?.startsWith("EURO"))
-				.map((league) => {
-					league.matches?.forEach((match) => matches.push(match));
-				});
-			return matches;
+			return leagues
+				.filter(({ name }) => name?.startsWith("EURO"))
+				.map(({ matches }) => matches)
+				.flat();
 		}
+		return [];
 	} catch (e) {
 		throw new Error("Failed to get matches");
 	}
@@ -80,27 +76,32 @@ async function getPredictionByDate() {
 	}
 }
 
-async function getUsersScore() {
+async function getUsersData() {
 	let localeDate = DateTime.now().setZone("utc");
 
 	try {
-		const usersScore = await prisma.user.findMany({
-			select: {
-				predictions: {
+		const users = await prisma.user.findMany();
+
+		return Promise.all(
+			users.map(async ({ name, id, score }) => {
+				const numberOfPrediction = await prisma.prediction.count({
 					where: {
 						createdAt: {
 							lte: localeDate.toISO() as string,
 						},
+						userId: id,
 					},
-				},
-				score: true,
-				name: true,
-			},
-		});
-
-		return usersScore;
+				});
+				return {
+					name,
+					id,
+					score,
+					numberOfPrediction,
+				};
+			})
+		);
 	} catch (e) {
-		throw new Error("Failed to get users scores");
+		throw new Error("Failed to get users data");
 	}
 }
 
@@ -108,5 +109,5 @@ export {
 	getEuroCupMatches,
 	getMatchDetailByID,
 	getPredictionByDate,
-	getUsersScore,
+	getUsersData,
 };

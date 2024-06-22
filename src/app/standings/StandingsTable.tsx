@@ -1,3 +1,5 @@
+"use client";
+
 import {
 	Table,
 	TableBody,
@@ -6,32 +8,33 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { useAuth } from "@clerk/nextjs";
 import { Trophy } from "lucide-react";
 import { useMemo } from "react";
 
-interface UsersScore {
+interface UserData {
+	id: string;
 	name: string | null;
 	score: number;
-	predictions: {
-		matchId: string;
-		createdAt: Date;
-		userId: string;
-		home: string;
-		away: string;
-		homeScore: number;
-		awayScore: number;
-	}[];
+	numberOfPrediction: number;
 }
 
 export default function StandingsTable({
-	usersScore,
+	usersData,
 }: {
-	usersScore: UsersScore[];
+	usersData: UserData[];
 }) {
+	const { isLoaded, userId } = useAuth();
+
 	const sortedUsersScore = useMemo(
-		() => usersScore.sort((a, b) => b.score - a.score),
-		[usersScore]
+		() => usersData.sort((a, b) => b.score - a.score),
+		[usersData]
 	);
+
+	if (!isLoaded) {
+		return null;
+	}
 
 	return (
 		<div className='bg-background p-4 md:p-6 rounded-lg shadow-lg'>
@@ -58,18 +61,23 @@ export default function StandingsTable({
 					</TableHeader>
 					<TableBody>
 						{sortedUsersScore.map((userScore, index) => {
-							const { name, score, predictions } = userScore;
+							const { id, name, score, numberOfPrediction } = userScore;
 
 							const avarageScorePerPrediction =
-								score > 0 ? (score / predictions.length).toFixed(2) : 0;
+								score > 0 ? (score / numberOfPrediction).toFixed(2) : 0;
 
 							return (
-								<TableRow key={index} className='border-b border-muted'>
+								<TableRow
+									key={index}
+									className={cn("border-b border-muted", {
+										"bg-gray-300 dark:bg-gray-700": userId === id,
+									})}
+								>
 									<TableCell className='py-3 pr-4 font-medium'>
 										{name}
 									</TableCell>
 									<TableCell className='py-3 pr-4'>
-										{predictions.length}
+										{numberOfPrediction}
 									</TableCell>
 									<TableCell className='py-3 pr-4'>{score}</TableCell>
 									<TableCell className='py-3 pr-4'>

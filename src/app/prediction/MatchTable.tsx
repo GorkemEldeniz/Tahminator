@@ -17,7 +17,7 @@ export default function MatchTable({
 	matches,
 	predictions,
 }: {
-	matches: Match[] | undefined;
+	matches: Partial<Match[]>;
 	predictions?: {
 		matchId: string;
 		homeScore: number;
@@ -44,30 +44,30 @@ export default function MatchTable({
 				{Array.isArray(matches) && matches.length ? (
 					matches.map((match) => {
 						const prediction = predictions?.find(
-							(prediction) => parseInt(prediction.matchId) === match.id
+							(prediction) => parseInt(prediction.matchId) === match?.id
 						);
 
 						return (
 							<TableRow
-								key={match.id}
+								key={match?.id}
 								className='cursor-pointer'
-								onClick={() => router.push(`/prediction/${match.id}`)}
+								onClick={() => router.push(`/prediction/${match?.id}`)}
 							>
 								<TableCell>
-									<h2>{match.home?.name}</h2>
+									<h2>{match?.home?.name}</h2>
 								</TableCell>
 								<TableCell>
 									<Image
 										width={100}
 										height={40}
 										className='object-contain h-16'
-										src={`https://images.fotmob.com/image_resources/logo/teamlogo/${match.home?.id}_small.png`}
-										alt={match.home?.name || "flag"}
+										src={`https://images.fotmob.com/image_resources/logo/teamlogo/${match?.home?.id}_small.png`}
+										alt={match?.home?.name || "flag"}
 									/>
 								</TableCell>
 
 								<TableCell align='center'>
-									{DateTime.fromMillis(match.timeTS as number)
+									{DateTime.fromMillis(match?.timeTS as number)
 										.setZone("Turkey")
 										.toFormat("HH:mm")}
 									<br />
@@ -79,12 +79,12 @@ export default function MatchTable({
 										className='object-contain h-16'
 										width={100}
 										height={40}
-										src={`https://images.fotmob.com/image_resources/logo/teamlogo/${match.away?.id}_small.png`}
-										alt={match.away?.name || "flag"}
+										src={`https://images.fotmob.com/image_resources/logo/teamlogo/${match?.away?.id}_small.png`}
+										alt={match?.away?.name || "flag"}
 									/>
 								</TableCell>
 								<TableCell align='right'>
-									<h2>{match.away?.name}</h2>
+									<h2>{match?.away?.name}</h2>
 								</TableCell>
 							</TableRow>
 						);

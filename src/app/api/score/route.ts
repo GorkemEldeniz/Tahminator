@@ -22,19 +22,20 @@ export async function GET() {
 		);
 
 		const { leagues } = (await res.json()) as Matches;
-		const matches: Match[] = [];
+		let matches: Partial<Match[]>;
 
 		if (leagues) {
-			leagues
-				?.filter(({ name }) => name?.startsWith("EURO"))
-				.map((league) => {
-					league.matches?.forEach((match) => matches.push(match));
-				});
+			matches = leagues
+				.filter(({ name }) => name?.startsWith("EURO"))
+				.map(({ matches }) => matches)
+				.flat();
+		} else {
+			matches = [];
 		}
 
 		const usersPrediction = await prisma.prediction.findMany({
 			where: {
-				createdAt: dateTime.toISO() as string,
+				createdAt: previousDayDate.toISO() as string,
 			},
 		});
 
@@ -43,7 +44,7 @@ export async function GET() {
 			let totalScore = 100;
 
 			const match = matches.find(
-				(m) => m.id === parseInt(userPrediction.matchId)
+				(m) => m?.id === parseInt(userPrediction.matchId)
 			);
 
 			const homeScore = match?.home?.score as number;
