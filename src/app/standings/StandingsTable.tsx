@@ -70,7 +70,7 @@ export default function StandingsTable({
 
 							return (
 								<TableRow
-									onClick={() => router.push(`/user?id=${userId}&name=${name}`)}
+									onClick={() => router.push(`/user?id=${id}&name=${name}`)}
 									key={index}
 									className={cn("border-b border-muted cursor-pointer", {
 										"bg-gray-300 dark:bg-gray-700": userId === id,
