@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useAuth } from "@clerk/nextjs";
 import { Trophy } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 interface UserData {
@@ -25,6 +26,7 @@ export default function StandingsTable({
 }: {
 	usersData: UserData[];
 }) {
+	const router = useRouter();
 	const { isLoaded, userId } = useAuth();
 
 	const sortedUsersScore = useMemo(
@@ -33,7 +35,7 @@ export default function StandingsTable({
 	);
 
 	if (!isLoaded) {
-		return null;
+		throw new Error("Authorization Error");
 	}
 
 	return (
@@ -68,8 +70,9 @@ export default function StandingsTable({
 
 							return (
 								<TableRow
+									onClick={() => router.push(`/user?id=${userId}&name=${name}`)}
 									key={index}
-									className={cn("border-b border-muted", {
+									className={cn("border-b border-muted cursor-pointer", {
 										"bg-gray-300 dark:bg-gray-700": userId === id,
 									})}
 								>
