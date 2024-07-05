@@ -77,7 +77,7 @@ async function getPredictionByDate() {
 }
 
 async function getUsersData() {
-	let localeDate = DateTime.now().setZone("utc");
+	let localeDate = DateTime.now().setZone("Turkey");
 
 	try {
 		const users = await prisma.user.findMany();

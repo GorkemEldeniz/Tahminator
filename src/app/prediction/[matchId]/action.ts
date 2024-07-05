@@ -4,6 +4,7 @@ import prisma from "@/db";
 import { actionClient } from "@/lib/safe-action";
 import type { User } from "@clerk/nextjs/server";
 import { currentUser } from "@clerk/nextjs/server";
+import { DateTime } from "luxon";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
@@ -27,6 +28,7 @@ export const createMatchPrediction = actionClient
 		async ({ parsedInput: { home, away, homeScore, awayScore, matchId } }) => {
 			try {
 				const { id } = (await currentUser()) as User;
+				let localeDate = DateTime.now().setZone("Turkey");
 
 				await prisma.prediction.create({
 					data: {
@@ -35,6 +37,7 @@ export const createMatchPrediction = actionClient
 						away,
 						homeScore,
 						awayScore,
+						createdAt: localeDate.toISO() as string,
 						user: {
 							connect: {
 								id,

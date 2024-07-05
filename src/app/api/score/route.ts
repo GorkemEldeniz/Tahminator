@@ -12,7 +12,7 @@ export async function GET() {
 
 	try {
 		// get the previos date results
-		const dateTime = DateTime.now().setZone("utc");
+		const dateTime = DateTime.now().setZone("Turkey");
 		const previousDayDate = dateTime.minus({ day: 1 });
 
 		const res = await fetch(
