@@ -13,6 +13,7 @@ import { useAuth } from "@clerk/nextjs";
 import { Trophy } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useMemo } from "react";
+import getWeightedScore from ".";
 
 interface UserData {
 	id: string;
@@ -29,10 +30,39 @@ export default function StandingsTable({
 	const router = useRouter();
 	const { isLoaded, userId } = useAuth();
 
-	const sortedUsersScore = useMemo(
-		() => usersData.sort((a, b) => b.score - a.score),
-		[usersData]
-	);
+	// calculate the overall avarage
+	// const overallAverage = useMemo(() => {
+	// 	const { numberOfAllPrediction, sumOfAllScore } = usersData.reduce(
+	// 		(acc, cur) => {
+	// 			acc.numberOfAllPrediction += cur.numberOfPrediction;
+	// 			acc.sumOfAllScore += cur.score;
+	// 			return acc;
+	// 		},
+	// 		{
+	// 			numberOfAllPrediction: 0,
+	// 			sumOfAllScore: 0,
+	// 		}
+	// 	);
+
+	// 	return sumOfAllScore / numberOfAllPrediction;
+	// }, [usersData]);
+
+	const sortedUsersScore = useMemo(() => {
+		const usersDataWithAvarage = usersData.map((userData) => {
+			const { score, numberOfPrediction } = userData;
+
+			const weightedScore = getWeightedScore(numberOfPrediction, score);
+
+			return {
+				...userData,
+				weightedScore,
+			};
+		});
+
+		return usersDataWithAvarage.sort(
+			(a, b) => b.weightedScore - a.weightedScore
+		);
+	}, [usersData]);
 
 	if (!isLoaded) {
 		throw new Error("Authorization Error");
@@ -55,18 +85,18 @@ export default function StandingsTable({
 							<TableHead className='py-3 pr-4 font-medium'>
 								Predictions
 							</TableHead>
-							<TableHead className='py-3 pr-4 font-medium'>Score</TableHead>
 							<TableHead className='py-3 pr-4 font-medium'>
-								Avg. Points
+								Total Score
+							</TableHead>
+							<TableHead className='py-3 pr-4 font-medium truncate'>
+								Point
 							</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
 						{sortedUsersScore.map((userScore, index) => {
-							const { id, name, score, numberOfPrediction } = userScore;
-
-							const avarageScorePerPrediction =
-								score > 0 ? (score / numberOfPrediction).toFixed(2) : 0;
+							const { name, id, score, numberOfPrediction, weightedScore } =
+								userScore;
 
 							return (
 								<TableRow
@@ -84,7 +114,7 @@ export default function StandingsTable({
 									</TableCell>
 									<TableCell className='py-3 pr-4'>{score}</TableCell>
 									<TableCell className='py-3 pr-4'>
-										{avarageScorePerPrediction}
+										{weightedScore.toFixed(2)}
 									</TableCell>
 								</TableRow>
 							);
