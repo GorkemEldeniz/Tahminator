@@ -1,9 +1,11 @@
+import MatchTable from "../../components/match-table";
 import { getEuroCupMatches, getPredictionByDate } from "../action";
-import MatchTable from "./MatchTable";
 
 export default async function Prediction() {
-	const matches = await getEuroCupMatches();
-	const predictions = await getPredictionByDate();
+	const [matches, predictions] = await Promise.all([
+		getEuroCupMatches(),
+		getPredictionByDate()
+	]);
 
 	return <MatchTable predictions={predictions} matches={matches} />;
 }

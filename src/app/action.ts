@@ -82,7 +82,7 @@ async function getUsersData() {
 	try {
 		const users = await prisma.user.findMany();
 
-		return Promise.all(
+		const usersData = await Promise.all(
 			users.map(async ({ name, id, score }) => {
 				const numberOfPrediction = await prisma.prediction.count({
 					where: {
@@ -100,6 +100,8 @@ async function getUsersData() {
 				};
 			})
 		);
+
+		return usersData;
 	} catch (e) {
 		throw new Error("Failed to get users data");
 	}
@@ -109,5 +111,6 @@ export {
 	getEuroCupMatches,
 	getMatchDetailByID,
 	getPredictionByDate,
-	getUsersData,
+	getUsersData
 };
+

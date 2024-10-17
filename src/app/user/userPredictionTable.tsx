@@ -9,6 +9,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { useTranslation } from "react-i18next";
 
 interface Prediction {
 	home: string;
@@ -26,13 +27,15 @@ export default function UserPredictionTable({
 	name: string;
 }) {
 	const router = useRouter();
+	const { t } = useTranslation('common'); // Add this line
+
 	return (
 		<Table>
 			<TableHeader>
 				<TableRow>
 					<TableHead></TableHead>
 					<TableHead className='text-center'>
-						{name || "User"} Predictions
+						{t('userPredictions', { name: name || t('user') })}
 					</TableHead>
 					<TableHead></TableHead>
 				</TableRow>
@@ -65,7 +68,7 @@ export default function UserPredictionTable({
 				) : (
 					<TableRow>
 						<TableCell className='text-center' colSpan={3}>
-							<h2>No prediction found for this user !</h2>
+							<h2>{t('noPredictionFound')}</h2>
 						</TableCell>
 					</TableRow>
 				)}

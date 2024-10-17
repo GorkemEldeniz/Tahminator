@@ -1,8 +1,7 @@
 import { getMatchDetailByID } from "@/app/action";
+import MatchForm from "@/components/match-form";
 import prisma from "@/db";
 import { currentUser, User } from "@clerk/nextjs/server";
-import MatchForm from "./MatchForm";
-import MatchUpdateForm from "./MatchUpdateForm";
 
 export default async function MatchDetailPage({
 	params,
@@ -21,8 +20,5 @@ export default async function MatchDetailPage({
 		},
 	});
 
-	if (prediction)
-		return <MatchUpdateForm details={details} prediction={prediction} />;
-
-	return <MatchForm details={details} matchId={params.matchId} />;
+	return <MatchForm details={details} prediction={prediction} matchId={params.matchId} />;
 }

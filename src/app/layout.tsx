@@ -1,5 +1,7 @@
-import NavBar from "@/components/NavBar";
+import Footer from "@/components/footer";
+import NavBar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
+import TranslationProvider from "@/components/translation-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
@@ -27,18 +29,21 @@ export default function RootLayout({
 						color='#6b7280'
 						template='<div class="bar" role="bar"><div class="peg"></div></div>'
 					/>
-					<ThemeProvider
-						attribute='class'
-						defaultTheme='system'
-						enableSystem
-						disableTransitionOnChange
-					>
-						<main className='max-w-screen-xl mx-auto h-screen'>
-							<NavBar />
-							{children}
-						</main>
-						<Toaster />
-					</ThemeProvider>
+					<TranslationProvider>
+						<ThemeProvider
+							attribute='class'
+							defaultTheme='system'
+							enableSystem
+							disableTransitionOnChange
+						>
+							<main className='flex flex-col  max-w-screen-xl mx-auto h-screen'>
+								<NavBar />
+								{children}
+								<Footer />
+							</main>
+							<Toaster />
+						</ThemeProvider>
+					</TranslationProvider>
 				</body>
 			</html>
 		</ClerkProvider>

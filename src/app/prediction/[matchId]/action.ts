@@ -8,83 +8,68 @@ import { DateTime } from "luxon";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-const createPredictionSchema = z.object({
+const predictionSchema = z.object({
 	matchId: z.string(),
-	home: z.string().min(2).max(50),
-	away: z.string().min(2).max(50),
+	home: z.string().min(2).max(50).optional(),
+	away: z.string().min(2).max(50).optional(),
 	homeScore: z.number().min(0),
 	awayScore: z.number().min(0),
+	isUpdate: z.boolean(),
 });
 
-const predictionUpdateSchema = z.object({
-	matchId: z.string(),
-	homeScore: z.number().min(0),
-	awayScore: z.number().min(0),
-});
-
-export const createMatchPrediction = actionClient
-	.schema(createPredictionSchema)
+export const handleMatchPrediction = actionClient
+	.schema(predictionSchema)
 	.action(
-		async ({ parsedInput: { home, away, homeScore, awayScore, matchId } }) => {
+		async ({ parsedInput: { home, away, homeScore, awayScore, matchId, isUpdate } }) => {
 			try {
 				const { id } = (await currentUser()) as User;
 				let localeDate = DateTime.now().setZone("Turkey");
 
-				await prisma.prediction.create({
-					data: {
-						matchId,
-						home,
-						away,
-						homeScore,
-						awayScore,
-						createdAt: localeDate.toISO() as string,
-						user: {
-							connect: {
-								id,
+				if (isUpdate) {
+					await prisma.prediction.update({
+						where: {
+							predictionId: {
+								matchId,
+								userId: id,
 							},
 						},
-					},
-				});
+						data: {
+							homeScore,
+							awayScore,
+						},
+					});
 
-				return {
-					success: true,
-					message: "Prediction created and saved!",
-				};
+					return {
+						success: true,
+						message: "Prediction updated and saved!",
+					};
+				} else {
+					await prisma.prediction.create({
+						data: {
+							matchId,
+							home: home!,
+							away: away!,
+							homeScore,
+							awayScore,
+							createdAt: localeDate.toISO() as string,
+							user: {
+								connect: {
+									id,
+								},
+							},
+						},
+					});
+
+					return {
+						success: true,
+						message: "Prediction created and saved!",
+					};
+				}
 			} catch (e) {
 				console.log(e);
-				throw new Error("Prediction could not created!");
+				throw new Error(isUpdate ? "Prediction could not be updated!" : "Prediction could not be created!");
 			} finally {
 				revalidatePath(`/prediction/${matchId}`);
 			}
 		}
 	);
-
-export const updateMatchPrediction = actionClient
-	.schema(predictionUpdateSchema)
-	.action(async ({ parsedInput: { homeScore, awayScore, matchId } }) => {
-		try {
-			const { id } = (await currentUser()) as User;
-
-			await prisma.prediction.update({
-				where: {
-					predictionId: {
-						matchId,
-						userId: id,
-					},
-				},
-				data: {
-					homeScore,
-					awayScore,
-				},
-			});
-
-			return {
-				success: true,
-				message: "Prediction updated and saved!",
-			};
-		} catch (e) {
-			throw new Error("Prediction could not updated");
-		} finally {
-			revalidatePath(`/prediction/${matchId}`);
-		}
-	});
