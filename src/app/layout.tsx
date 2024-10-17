@@ -1,5 +1,5 @@
 import Footer from "@/components/footer";
-import NavBar from "@/components/navbar";
+import Navbar from "@/components/navbar";
 import { ThemeProvider } from "@/components/theme-provider";
 import TranslationProvider from "@/components/translation-provider";
 import { Toaster } from "@/components/ui/toaster";
@@ -37,7 +37,7 @@ export default function RootLayout({
 							disableTransitionOnChange
 						>
 							<main className='flex flex-col  max-w-screen-xl mx-auto h-screen'>
-								<NavBar />
+								<Navbar />
 								{children}
 								<Footer />
 							</main>

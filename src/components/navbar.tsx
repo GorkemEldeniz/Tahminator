@@ -19,7 +19,7 @@ import MobilMenu from "./mobile-menu";
 import ModeToggle from "./mode-toggle";
 import { Skeleton } from "./ui/skeleton";
 
-export default function NavBar() {
+export default function Navbar() {
 	const pathname = usePathname();
 
 	const { t } = useTranslation();
