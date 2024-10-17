@@ -1,5 +1,6 @@
-import StandingsTable from "../../components/standing-table";
+import StandingsTable from "@/components/standing-table";
 import { getUsersData } from "../action";
+
 
 export default async function StandingsPage() {
 	const usersData = await getUsersData();
